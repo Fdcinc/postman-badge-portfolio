@@ -1,1 +1,63 @@
+{
+  "info": {
+    "name": "Payment Flow API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Access Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/x-www-form-urlencoded" },
+          { "key": "Authorization", "value": "Basic {{client_credentials}}" }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [{ "key": "grant_type", "value": "client_credentials" }]
+        },
+        "url": "{{baseUrl}}/v1/oauth2/token"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.environment.set('access_token', pm.response.json().access_token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Order",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"intent\": \"CAPTURE\",\n  \"purchase_units\": [{ \"amount\": { \"currency_code\": \"USD\", \"value\": \"50.00\" } }]\n}"
+        },
+        "url": "{{baseUrl}}/v2/checkout/orders"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Order created', () => pm.response.to.have.status(201));"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "https://api-m.sandbox.paypal.com" },
+    { "key": "client_credentials", "value": "YOUR_ENCODED_CLIENT:SECRET" }
+  ]
+}
 
