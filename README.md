@@ -60,3 +60,9 @@ Collection design best practices
 Automation via Newman/CI
 Read more: docs/about-badge.md
 
+🗣 Contact
+
+👨‍💻 Nikolaos Routsis
+📧 nickroutsis@gmail.com
+🐙 GitHub
+💼 LinkedIn
