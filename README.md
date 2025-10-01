@@ -36,4 +36,17 @@ Install dependencies:
 
 ```bash
 npm install -g newman newman-reporter-htmlextra
+```
+```bash
+newman run collections/grocery-store.postman_collection.json \
+  -e environments/dev.postman_environment.json \
+  -r htmlextra \
+  --reporter-htmlextra-export tests/grocery-report.html
+
+🧰 Tools Used
+
+🧪 Postman – API testing & scripting
+⚙️ Newman – CLI automation
+📈 htmlextra – HTML visual reports
+🐙 GitHub – Version control & portfolio hosting
 
