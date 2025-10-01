@@ -42,7 +42,7 @@ newman run collections/grocery-store.postman_collection.json \
   -e environments/dev.postman_environment.json \
   -r htmlextra \
   --reporter-htmlextra-export tests/grocery-report.html
-
+```
 🧰 Tools Used
 
 🧪 Postman – API testing & scripting
