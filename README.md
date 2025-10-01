@@ -50,3 +50,13 @@ newman run collections/grocery-store.postman_collection.json \
 📈 htmlextra – HTML visual reports
 🐙 GitHub – Version control & portfolio hosting
 
+🏷 About the Badge
+
+This badge validates:
+API request/response testing
+Pre-request & test scripting
+Variable/environment management
+Collection design best practices
+Automation via Newman/CI
+Read more: docs/about-badge.md
+
