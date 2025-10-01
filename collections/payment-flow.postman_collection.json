@@ -1,6 +1,7 @@
 {
   "info": {
     "name": "Payment Flow API",
+    "description": "Simulated PayPal Checkout Flow with OAuth2 and Order Creation",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -14,16 +15,25 @@
         ],
         "body": {
           "mode": "urlencoded",
-          "urlencoded": [{ "key": "grant_type", "value": "client_credentials" }]
+          "urlencoded": [
+            { "key": "grant_type", "value": "client_credentials" }
+          ]
         },
-        "url": "{{baseUrl}}/v1/oauth2/token"
+        "url": {
+          "raw": "{{paypal_baseUrl}}/v1/oauth2/token",
+          "host": ["{{paypal_baseUrl}}"],
+          "path": ["v1", "oauth2", "token"]
+        }
       },
       "event": [
         {
           "listen": "test",
           "script": {
             "exec": [
-              "pm.environment.set('access_token', pm.response.json().access_token);"
+              "pm.test('Status code is 200', () => pm.response.to.have.status(200));",
+              "const token = pm.response.json().access_token;",
+              "pm.environment.set('access_token', token);",
+              "console.log('Access token saved:', token);"
             ]
           }
         }
@@ -39,16 +49,49 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"intent\": \"CAPTURE\",\n  \"purchase_units\": [{ \"amount\": { \"currency_code\": \"USD\", \"value\": \"50.00\" } }]\n}"
+          "raw": "{\n  \"intent\": \"CAPTURE\",\n  \"purchase_units\": [\n    {\n      \"amount\": {\n        \"currency_code\": \"USD\",\n        \"value\": \"50.00\"\n      }\n    }\n  ]\n}"
         },
-        "url": "{{baseUrl}}/v2/checkout/orders"
+        "url": {
+          "raw": "{{paypal_baseUrl}}/v2/checkout/orders",
+          "host": ["{{paypal_baseUrl}}"],
+          "path": ["v2", "checkout", "orders"]
+        }
       },
       "event": [
         {
           "listen": "test",
           "script": {
             "exec": [
-              "pm.test('Order created', () => pm.response.to.have.status(201));"
+              "pm.test('Status code is 201', () => pm.response.to.have.status(201));",
+              "const orderId = pm.response.json().id;",
+              "pm.environment.set('order_id', orderId);",
+              "console.log('Order created:', orderId);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Capture Order",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": {
+          "raw": "{{paypal_baseUrl}}/v2/checkout/orders/{{order_id}}/capture",
+          "host": ["{{paypal_baseUrl}}"],
+          "path": ["v2", "checkout", "orders", "{{order_id}}", "capture"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 201', () => pm.response.to.have.status(201));",
+              "pm.test('Order captured', () => pm.expect(pm.response.json().status).to.eql('COMPLETED'));"
             ]
           }
         }
@@ -56,8 +99,10 @@
     }
   ],
   "variable": [
-    { "key": "baseUrl", "value": "https://api-m.sandbox.paypal.com" },
-    { "key": "client_credentials", "value": "YOUR_ENCODED_CLIENT:SECRET" }
+    { "key": "paypal_baseUrl", "value": "https://api-m.sandbox.paypal.com" },
+    { "key": "client_credentials", "value": "YOUR_ENCODED_CLIENT:SECRET" },
+    { "key": "access_token", "value": "" },
+    { "key": "order_id", "value": "" }
   ]
 }
 
