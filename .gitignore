@@ -1,1 +1,22 @@
+# Node dependencies
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Postman temp files
+newman/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Reports and artifacts
+tests/*.html
+tests/*.json
+
+# Environment secrets (optional)
+*.env
 
